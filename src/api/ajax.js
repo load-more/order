@@ -1,33 +1,27 @@
-const axios = require('axios')
+import axios from 'axios'
 
-module.exports = function(url, type='get', params={}) {
+export default function(url, params={}) {
   const instance = axios.create({
-    baseURL: 'http://152.136.185.210:7878/api/m5',  //http://123.207.32.32:8000 
+    baseURL: 'http://152.136.185.210:7878/api/m5',
     timeout: 5000
   })
 
-  const res = instance({
-    url
+  instance.interceptors.request.use(config => {
+    return config
+  }, err => {
+    console.log(err);
+  })
+
+  instance.interceptors.response.use(response => { // 使用响应拦截器，修改响应数据
+    return response.data
+  }, err => {
+    console.log(err);
+  })
+
+  const res = instance({ // 当params存在时，使用post请求；params为空时，使用get请求
+    url,
+    params
   })
 
   return res
-
-  
-  // instance.interceptors.request.use(config => {
-  //   return config
-  // }, err => {
-  //   console.log(err);
-  // })
-  
-  // instance.interceptors.response.use(res => {
-  //   return res.data.data
-  // }, err => {
-  //   console.log(err);
-  // })
-  
-  
-  // res.then(l => {
-  //   const {data} = l.data
-  //   console.log(data);
-  // })
 }

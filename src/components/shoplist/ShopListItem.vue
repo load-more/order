@@ -3,7 +3,9 @@
     <img src="@/assets/img/shop.jpg" alt="">
     <div class="content">
       <div class="title">【商家】好味道</div>
-      <div class="star">五星评分</div>
+      <div class="star">
+        <Star :score='score'></Star>
+      </div>
       <div class="price">
         <span>￥20起送/</span>
         <span>配送费约￥5</span>
@@ -13,8 +15,18 @@
 </template>
 
 <script>
+import Star from '@/components/star/Star.vue'
+
 export default {
   name: 'ShopListItem',
+  components: {
+    Star,
+  },
+  data() {
+    return {
+      score: 3.8
+    }
+  }
 }
 </script>
 
@@ -38,8 +50,9 @@ export default {
     font-weight: bold;
   }
   .star {
-    font-size: 12px;
+    font-size: 14px;
     color: #666;
+    display: flex;
   }
   .price {
     font-size: 12px;

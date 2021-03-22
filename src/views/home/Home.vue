@@ -5,16 +5,22 @@
         <i class="iconfont iconsearch" style="font-size: 25px"></i>
       </template>
       <template v-slot:title>
-        <span>首页</span>
+        <span>{{title}}</span>
       </template>
       <template v-slot:right>
         <span>登录</span>
       </template>
     </header-bar>
     <carousel class="swiper">
-      <div class="swiper-slide" v-for="(item, index) in 5" :key="index">
-        <img :src="require('@/assets/img/banner'+(index+1)+'.jpg')" alt="">
+      <div v-if="food.length">
+        <ul class="swiper-slide" v-for="(arr, index) in foodArr" :key="index">
+          <li v-for="(item, index) in arr" :key="index">
+            <img :src="item.pic" alt="">
+            <span>{{item.name}}</span>
+          </li>
+        </ul>
       </div>
+      <img src="@/assets/img/loading.png" alt="back" v-else>
     </carousel>
     <shop-list class="shoplist"></shop-list>
   </div>
@@ -24,13 +30,57 @@
 import HeaderBar from '@/components/headerbar/HeaderBar.vue'
 import Carousel from '@/components/carousel/Carousel.vue'
 import ShopList from '@/components/shoplist/ShopList.vue'
+import {mapActions, mapState} from 'vuex'
 
-export default {
+import Swiper from 'swiper'
+import 'swiper/dist/css/swiper.min.css'
+
+export default { 
   name: 'Home',
   components: {
     HeaderBar,
     Carousel,
     ShopList,
+  },
+  methods: {
+    ...mapActions(['getAll'])
+  },
+  mounted() {
+    this.getAll()
+  },
+  watch: {
+    foodArr(newVal, oldVal) {
+      this.$nextTick(() => {
+        new Swiper ('.swiper-container', {
+          direction: 'horizontal', 
+          loop: true, 
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true
+          },
+          observer: true,
+          observeParents: true,
+        })
+      })
+    }
+  },
+  computed: {
+    ...mapState(['title', 'food']),
+    foodArr() { // 将一维数组转换为二维数组
+      let arr = []
+      let item = []
+      for (let i of this.food) {
+        item.push(i)
+        if (item.length === 8) {
+          arr.push(item)
+          item = []
+        }
+      }
+      if (item) {
+        arr.push(item)
+      }
+      return arr
+    }
   }
 }
 </script>
@@ -44,5 +94,21 @@ export default {
   }
   .shoplist {
     padding-bottom: 65px;
+  }
+  .swiper-slide {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .swiper-slide > li {
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    color: green;
+    font-size: 15px;
+  }
+  .swiper-slide img {
+    width: 60%;
+    margin: 3px auto;
   }
 </style>

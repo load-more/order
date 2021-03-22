@@ -1,7 +1,7 @@
 <template>
   <div id="nav">
     <router-view></router-view>
-    <footer-bar></footer-bar>
+    <footer-bar v-if="$route.meta.showFooterBar"></footer-bar>
   </div>
 </template>
 

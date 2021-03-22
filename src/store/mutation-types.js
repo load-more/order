@@ -1,0 +1,5 @@
+export const RECEIVE_TITLE = 'receive_title'
+export const RECEIVE_SORT = 'receive_sort'
+export const RECEIVE_PAGE = 'receive_page'
+export const RECEIVE_LIST = 'receive_list'
+export const RECEIVE_FOOD = 'receive_food'
