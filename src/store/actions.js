@@ -4,9 +4,16 @@ import {
   RECEIVE_PAGE,
   RECEIVE_LIST,
   RECEIVE_FOOD,
+  RECEIVE_USERS,
+  SET_TOKEN,
+  REMOVE_TOKEN,
+  RECEIVE_COMMODITIES,
+  RECEIVE_COMMENTS,
+  RECEIVE_STOREINFO,
 } from './mutation-types'
 
-import {getMultiData, getData} from '@/api/home.js'
+import { getMultiData, getData } from '@/api/home.js'
+import { getCommodities, getComments, getStoreInfo } from '@/api/mockReq.js'
 
 export default {
   // 异步获取数据
@@ -41,6 +48,37 @@ export default {
           {name: '饮料', pic: 'https://gitee.com/gainmore/imglib/raw/master/img/%E9%A3%9F%E5%93%81%E9%A5%AE%E6%96%99.png'},
           {name: '西餐', pic: 'https://gitee.com/gainmore/imglib/raw/master/img/%E8%A7%86%E9%A2%91_%E8%A5%BF%E9%A4%90.png'},
         ]})
+      }
+    })
+  },
+  getUsers(context, payload) {
+    context.commit(RECEIVE_USERS, payload)
+  },
+  setToken(context, payload) {
+    context.commit(SET_TOKEN, payload)
+  },
+  removeToken(context, payload) {
+    context.commit(REMOVE_TOKEN, payload)
+  },
+  getCommodities(context) {
+    getCommodities().then(res => {
+      if (res.code === 0) {
+        context.commit(RECEIVE_COMMODITIES, res.data)
+      }
+    })
+  },
+  getComments(context) {
+    getComments().then(res => {
+      if (res.code === 0) {
+        context.commit(RECEIVE_COMMENTS, res.data)
+        console.log(res.data);
+      }
+    })
+  },
+  getStoreInfo(context) {
+    getStoreInfo().then(res => {
+      if (res.code === 0) {
+        context.commit(RECEIVE_STOREINFO, res.data)
       }
     })
   },

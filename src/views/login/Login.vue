@@ -38,6 +38,9 @@
       </div>
       <div class="verifi">
         <input type="text" placeholder="验证码" maxlength="8" v-model="captcha">
+        <div class="vericode" @click="getVericode">
+          <span>{{vericode}}</span>
+        </div>
       </div>
       <button class="login" @click.prevent="pwdLogin">登录</button>
       <a href="#" class="about">关于我们</a>
@@ -48,6 +51,8 @@
 
 <script>
 import Toast from '@/components/toast/Toast.vue'
+import { sendCode } from '@/api/home.js'
+import { mapActions, mapState } from 'vuex'
 
 export default {
   name: 'Login',
@@ -64,6 +69,8 @@ export default {
       captcha: '',
       alertMsg: '',
       isShowAlert: false,
+      vericode: '',
+      smsCode: '',
     }
   },
   components: {
@@ -71,6 +78,9 @@ export default {
   },
   methods: {
     sendVerifi() {
+      let res = sendCode(this.phoneNumber).then(response => {
+        this.smsCode = response.data // 保存验证码
+      })
       this.isSend = !this.isSend
       const timer = setInterval(() => {
         this.time--
@@ -90,8 +100,13 @@ export default {
         this.showAlert('请填写手机号码！')
       } else if (!this.verifiCode) {
         this.showAlert('请填写验证码！')
-      } else {
+      } else if (this.smsCode === this.verifiCode) {
+        this.users.id = 1
+        this.users.phone = this.phoneNumber
         alert('登录成功！')
+        this.$router.replace('/profile') // 不希望历史记录回退
+      } else {
+        this.showAlert('手机号码或验证码错误！')
       }
     },
     pwdLogin() {
@@ -101,15 +116,37 @@ export default {
         this.showAlert('请填写密码！')
       } else if (!this.captcha) {
         this.showAlert('请填写验证码！')
-      } else {
+      } else if (this.captcha.toLowerCase() !== this.vericode.toLowerCase()) {
+        this.showAlert('验证码错误！')
+        this.getVericode() // 重新获取验证码
+      } else if (this.username === 'zhangsan' && this.password === 'uuuuuu') {
         alert('登录成功！')
+        this.getUsers({id: 1, name: 'zhangsan', password: '123456', phone:''})
+        this.setToken(JSON.stringify({id: 1, name: 'zhangsan', password: '123456', phone:''}))
+        this.$router.replace('/profile') // 不希望历史记录回退
+      } else {
+        this.showAlert('用户名或密码错误！')
       }
-    }
+    },
+    getVericode() { // 随机获取验证码
+      let result = [];
+	    let n = 4; 
+	    for(let i=0;i<n;i++){
+   		  let ranNum = Math.ceil(Math.random() * 25) //生成一个0到25的数字
+    	  result.push(String.fromCharCode(65+ranNum)) // A~Z的ASCII码就是65 + 0~25
+      }
+      this.vericode = result.join('')
+    },
+    ...mapActions(['getUsers', 'setToken']),
   },
   computed: {
     rightPhone() {
       return /^1\d{10}$/.test(this.phoneNumber)
-    }
+    },
+    ...mapState(['users']),
+  },
+  mounted() {
+    this.getVericode()
   }
 }
 </script>
@@ -122,7 +159,7 @@ export default {
     display: inline-block;
     padding: 3px;
     font-size: 30px;
-    color: rgb(138, 136, 136);
+    color: green;
     padding: 10px;
   }
   .header {
@@ -238,5 +275,24 @@ export default {
   }
   .isWrongPhone {
     color:#d1d1d1
+  }
+  input:focus {
+    border: 1px solid green;
+    outline: none;
+  }
+  .verifi {
+    position: relative;
+  }
+  .vericode {
+    position: absolute;
+    right: 0;
+    top: 0;
+    background-color: greenyellow;
+    height: 100%;
+  }
+  .vericode span {
+    font-size: 22px;
+    display: inline-block;
+    margin-top: 13px;
   }
 </style>

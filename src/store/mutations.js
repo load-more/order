@@ -4,6 +4,12 @@ import {
   RECEIVE_PAGE,
   RECEIVE_LIST,
   RECEIVE_FOOD,
+  RECEIVE_USERS,
+  SET_TOKEN,
+  REMOVE_TOKEN,
+  RECEIVE_COMMODITIES,
+  RECEIVE_COMMENTS,
+  RECEIVE_STOREINFO,
 } from './mutation-types'
 
 export default {
@@ -21,5 +27,27 @@ export default {
   },
   [RECEIVE_FOOD](state, payload) {
     state.food = payload.food
+  },
+  [RECEIVE_USERS](state, payload) {
+    state.users.name = payload.name
+    state.users.password = payload.password
+    state.users.phone = payload.phone
+    state.users.id = payload.id
+  },
+  [SET_TOKEN](state, payload) {
+    window.sessionStorage.setItem('users', payload)
+  },
+  [REMOVE_TOKEN](state, payload) {
+    state.users = {id: '', name: '', password: '', phone: ''} // 重置users
+    window.sessionStorage.removeItem(payload) // 删除sessionStorge的数据
+  },
+  [RECEIVE_COMMODITIES](state, payload) {
+    state.commodities = payload.commodities
+  },
+  [RECEIVE_COMMENTS](state, payload) {
+    state.comments = payload.comments
+  },
+  [RECEIVE_STOREINFO](state, payload) {
+    state.storeInfo = payload.storeInfo
   },
 }

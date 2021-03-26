@@ -4,10 +4,10 @@
       <i class="iconfont iconProfile" style="font-size:60px; color:white"></i>
     </div>
     <div class="info">
-      <div class="lore">登录/注册</div>
+      <div class="lore" v-if="!users.phone">{{users.name || '登录/注册'}}</div>
       <div class="phone">
         <i class="iconfont iconphone" style="font-size: 20px"></i>
-        <span>暂无绑定手机号</span>
+        <span>{{users.phone || '暂无绑定手机号'}}</span>
       </div>
     </div>
     <div class="arrow">
@@ -17,13 +17,19 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   name: 'LoginBar',
+  computed: {
+    ...mapState(['users']),
+  },
   methods: {
     skip() {
-      this.$router.push('/login')
+      console.log(this.users);
+      this.users.id ? this.$router.push('/userinfo') : this.$router.push('/login')
     }
-  }
+  },
 }
 </script>
 

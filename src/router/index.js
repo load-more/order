@@ -43,6 +43,14 @@ const routes = [
     },
   },
   {
+    path: '/userinfo',
+    name: 'UserInfo',
+    component: () => import('@/views/userinfo/UserInfo.vue'),
+    meta: {
+      showFooterBar: true,
+    },
+  },
+  {
     path: '/',
     redirect: '/home',
   },

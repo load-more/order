@@ -8,7 +8,8 @@
         <span>{{title}}</span>
       </template>
       <template v-slot:right>
-        <span>登录</span>
+        <i class="iconfont iconProfile" v-if="users.id" style="font-size:22px"></i>
+        <span v-else @click="$router.push('/login')">登录</span>
       </template>
     </header-bar>
     <carousel class="swiper">
@@ -65,7 +66,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['title', 'food']),
+    ...mapState(['title', 'food', 'users']),
     foodArr() { // 将一维数组转换为二维数组
       let arr = []
       let item = []
